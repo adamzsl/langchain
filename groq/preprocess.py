@@ -5,12 +5,18 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS # Facebook AI Similarity Search - efficient similarity search and clustering of vectors
 from pathlib import Path
+from langchain_community.document_loaders import PlaywrightURLLoader
 
 
 load_dotenv()
+os.environ['USER_AGENT'] = 'myagent' # Set a custom user agent to avoid being blocked by the website
 
-# Load & split
-loader = WebBaseLoader("https://docs.smith.langchain.com/prompt_engineering/quickstarts/quickstart_sdk") # URL of the documentation site
+# Load & split - changed from WebBaseLoader to PlaywrightURLLoader
+# PlaywrightURLLoader scapes also client-side rendered content, while WebBaseLoader only scrapes static content
+loader = PlaywrightURLLoader(
+  urls=["https://docs.smith.langchain.com/prompt_engineering/quickstarts/quickstart_sdk"],
+  headless=True, 
+)
 docs = loader.load()
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200) # Split the documents into smaller chunks
 chunks = splitter.split_documents(docs[:50]) # Limit to 50 documents for testing

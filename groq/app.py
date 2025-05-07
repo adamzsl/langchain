@@ -30,7 +30,10 @@ if "vectors" not in st.session_state:
     st.session_state.vectors = get_vectorstore() # Load the vectorstore into session state
 
 st.title("LangChain Groq App")
-llm = ChatGroq(groq_api_key=groq_api_key, model="gemma2-9b-it") # LLM model - for text generation
+llm = ChatGroq(
+    groq_api_key=groq_api_key, 
+    model="gemma2-9b-it",
+    temperature=0)
 
 prompt_template = ChatPromptTemplate.from_template(
     """
